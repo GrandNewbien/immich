@@ -6,6 +6,5 @@ upload/**
 .prettierignore
 .prettierrc
 package-lock.json
-testSetup.js
 tsconfig.json
 tsconfig.build.json

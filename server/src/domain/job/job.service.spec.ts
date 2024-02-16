@@ -8,6 +8,7 @@ import {
   newPersonRepositoryMock,
   newSystemConfigRepositoryMock,
 } from '@test';
+import { Mocked } from 'vitest';
 import {
   IAssetRepository,
   ICommunicationRepository,
@@ -22,7 +23,7 @@ import { JobCommand, JobName, QueueName } from './job.constants';
 import { JobService } from './job.service';
 
 const makeMockHandlers = (success: boolean) => {
-  const mock = jest.fn().mockResolvedValue(success);
+  const mock = vi.fn().mockResolvedValue(success);
   return Object.fromEntries(Object.values(JobName).map((jobName) => [jobName, mock])) as unknown as Record<
     JobName,
     JobHandler
@@ -31,11 +32,11 @@ const makeMockHandlers = (success: boolean) => {
 
 describe(JobService.name, () => {
   let sut: JobService;
-  let assetMock: jest.Mocked<IAssetRepository>;
-  let configMock: jest.Mocked<ISystemConfigRepository>;
-  let communicationMock: jest.Mocked<ICommunicationRepository>;
-  let jobMock: jest.Mocked<IJobRepository>;
-  let personMock: jest.Mocked<IPersonRepository>;
+  let assetMock: Mocked<IAssetRepository>;
+  let configMock: Mocked<ISystemConfigRepository>;
+  let communicationMock: Mocked<ICommunicationRepository>;
+  let jobMock: Mocked<IJobRepository>;
+  let personMock: Mocked<IPersonRepository>;
 
   beforeEach(async () => {
     assetMock = newAssetRepositoryMock();

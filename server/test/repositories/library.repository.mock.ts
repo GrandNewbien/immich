@@ -1,21 +1,22 @@
 import { ILibraryRepository } from '@app/domain';
+import { Mocked } from 'vitest';
 
-export const newLibraryRepositoryMock = (): jest.Mocked<ILibraryRepository> => {
+export const newLibraryRepositoryMock = (): Mocked<ILibraryRepository> => {
   return {
-    get: jest.fn(),
-    getCountForUser: jest.fn(),
-    getAllByUserId: jest.fn(),
-    create: jest.fn(),
-    delete: jest.fn(),
-    softDelete: jest.fn(),
-    update: jest.fn(),
-    getStatistics: jest.fn(),
-    getDefaultUploadLibrary: jest.fn(),
-    getUploadLibraryCount: jest.fn(),
-    getOnlineAssetPaths: jest.fn(),
-    getAssetIds: jest.fn(),
-    existsByName: jest.fn(),
-    getAllDeleted: jest.fn(),
-    getAll: jest.fn(),
+    get: vi.fn(),
+    getCountForUser: vi.fn(),
+    getAllByUserId: vi.fn(),
+    create: vi.fn(),
+    delete: vi.fn(),
+    softDelete: vi.fn(),
+    update: vi.fn(),
+    getStatistics: vi.fn(),
+    getDefaultUploadLibrary: vi.fn(),
+    getUploadLibraryCount: vi.fn(),
+    getOnlineAssetPaths: vi.fn(),
+    getAssetIds: vi.fn(),
+    existsByName: vi.fn(),
+    getAllDeleted: vi.fn(),
+    getAll: vi.fn(),
   };
 };

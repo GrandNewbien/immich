@@ -1,5 +1,6 @@
 import { IStorageRepository, StorageCore, WatchEvents } from '@app/domain';
 import { WatchOptions } from 'chokidar';
+import { Mocked } from 'vitest';
 
 interface MockWatcherOptions {
   items?: Array<{ event: 'change' | 'add' | 'unlink' | 'error'; value: string }>;
@@ -32,28 +33,28 @@ export const makeMockWatcher =
     return () => close?.();
   };
 
-export const newStorageRepositoryMock = (reset = true): jest.Mocked<IStorageRepository> => {
+export const newStorageRepositoryMock = (reset = true): Mocked<IStorageRepository> => {
   if (reset) {
     StorageCore.reset();
   }
 
   return {
-    createZipStream: jest.fn(),
-    createReadStream: jest.fn(),
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
-    unlink: jest.fn(),
-    unlinkDir: jest.fn().mockResolvedValue(true),
-    removeEmptyDirs: jest.fn(),
-    checkFileExists: jest.fn(),
-    mkdirSync: jest.fn(),
-    checkDiskUsage: jest.fn(),
-    readdir: jest.fn(),
-    stat: jest.fn(),
-    crawl: jest.fn(),
-    rename: jest.fn(),
-    copyFile: jest.fn(),
-    utimes: jest.fn(),
-    watch: jest.fn().mockImplementation(makeMockWatcher({})),
+    createZipStream: vi.fn(),
+    createReadStream: vi.fn(),
+    readFile: vi.fn(),
+    writeFile: vi.fn(),
+    unlink: vi.fn(),
+    unlinkDir: vi.fn().mockResolvedValue(true),
+    removeEmptyDirs: vi.fn(),
+    checkFileExists: vi.fn(),
+    mkdirSync: vi.fn(),
+    checkDiskUsage: vi.fn(),
+    readdir: vi.fn(),
+    stat: vi.fn(),
+    crawl: vi.fn(),
+    rename: vi.fn(),
+    copyFile: vi.fn(),
+    utimes: vi.fn(),
+    watch: vi.fn().mockImplementation(makeMockWatcher({})),
   };
 };
