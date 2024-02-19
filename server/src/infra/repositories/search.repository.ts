@@ -26,6 +26,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { vectorExt } from '../database.config';
 import { DummyValue, GenerateSql } from '../infra.util';
 import { asVector, isValidInteger, paginatedBuilder, searchAssetBuilder } from '../infra.utils';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class SearchRepository implements ISearchRepository {
@@ -45,6 +46,7 @@ export class SearchRepository implements ISearchRepository {
       .filter((propertyName) => propertyName !== 'embedding');
   }
 
+  @Span()
   async init(modelName: string): Promise<void> {
     const { dimSize } = getCLIPModelInfo(modelName);
     const curDimSize = await this.getDimSize();
@@ -56,6 +58,7 @@ export class SearchRepository implements ISearchRepository {
     }
   }
 
+  @Span()
   @GenerateSql({
     params: [
       { page: 1, size: 100 },
@@ -89,6 +92,15 @@ export class SearchRepository implements ISearchRepository {
       .having(`COUNT(DISTINCT ${builder.alias}."personId") = :personCount`, { personCount: personIds.length });
   }
 
+  private createPersonFilter(builder: SelectQueryBuilder<AssetFaceEntity>, personIds: string[]) {
+    return builder
+      .select(`${builder.alias}."assetId"`)
+      .where(`${builder.alias}."personId" IN (:...personIds)`, { personIds })
+      .groupBy(`${builder.alias}."assetId"`)
+      .having(`COUNT(DISTINCT ${builder.alias}."personId") = :personCount`, { personCount: personIds.length });
+  }
+
+  @Span()
   @GenerateSql({
     params: [
       { page: 1, size: 100 },
@@ -137,6 +149,7 @@ export class SearchRepository implements ISearchRepository {
     return results;
   }
 
+  @Span()
   @GenerateSql({
     params: [
       {
@@ -196,6 +209,7 @@ export class SearchRepository implements ISearchRepository {
     }));
   }
 
+  @Span()
   @GenerateSql({ params: [DummyValue.STRING] })
   async searchPlaces(placeName: string): Promise<GeodataPlacesEntity[]> {
     return await this.geodataPlacesRepository
@@ -217,6 +231,7 @@ export class SearchRepository implements ISearchRepository {
       .getMany();
   }
 
+  @Span()
   async upsert(smartInfo: Partial<SmartInfoEntity>, embedding?: Embedding): Promise<void> {
     await this.repository.upsert(smartInfo, { conflictPaths: ['assetId'] });
     if (!smartInfo.assetId || !embedding) {

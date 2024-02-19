@@ -16,6 +16,7 @@ import {
   SystemConfigService,
   UserService,
 } from '@app/domain';
+import otelSDK from '@app/infra/tracing';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -89,5 +90,6 @@ export class AppService {
   async teardown() {
     await this.libraryService.teardown();
     await this.metadataService.teardown();
+    await otelSDK.shutdown();
   }
 }
