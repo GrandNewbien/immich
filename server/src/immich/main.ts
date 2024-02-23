@@ -1,6 +1,7 @@
 import { envName, isDev, serverVersion } from '@app/domain';
 import { WebSocketAdapter } from '@app/infra';
 import { ImmichLogger } from '@app/infra/logger';
+import otelSDK from '@app/infra/tracing';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { json } from 'body-parser';
@@ -8,7 +9,6 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
 import { useSwagger } from './app.utils';
-import otelSDK from '@app/infra/tracing';
 
 const logger = new ImmichLogger('ImmichServer');
 const port = Number(process.env.SERVER_PORT) || 3001;
@@ -32,7 +32,7 @@ export async function bootstrap() {
   app.setGlobalPrefix('api', { exclude: excludePaths });
   app.useStaticAssets('www');
   app.use(app.get(AppService).ssr(excludePaths));
-  
+
   const server = await app.listen(port);
   server.requestTimeout = 30 * 60 * 1000;
 
