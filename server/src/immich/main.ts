@@ -1,5 +1,5 @@
 import { envName, isDev, serverVersion } from '@app/domain';
-import { WebSocketAdapter } from '@app/infra';
+import { WebSocketAdapter, excludePaths } from '@app/infra';
 import { otelSDK } from '@app/infra/instrumentation';
 import { ImmichLogger } from '@app/infra/logger';
 import { NestFactory } from '@nestjs/core';
@@ -12,6 +12,7 @@ import { useSwagger } from './app.utils';
 
 const logger = new ImmichLogger('ImmichServer');
 const port = Number(process.env.SERVER_PORT) || 3001;
+
 
 export async function bootstrap() {
   otelSDK.start();
@@ -28,7 +29,6 @@ export async function bootstrap() {
   app.useWebSocketAdapter(new WebSocketAdapter(app));
   useSwagger(app, isDev);
 
-  const excludePaths = ['/.well-known/immich', '/custom.css'];
   app.setGlobalPrefix('api', { exclude: excludePaths });
   app.useStaticAssets('www');
   app.use(app.get(AppService).ssr(excludePaths));
